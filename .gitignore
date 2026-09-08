@@ -1,0 +1,10 @@
+# Compiled executables
+collision_finder
+collision_finder.exe
+
+# Test output files generated during development
+test_output.pdf
+
+# OS-specific junk files
+.DS_Store
+Thumbs.db
