@@ -82,6 +82,7 @@ static int table_lookup(HashEntry *table, uint64_t hash, uint64_t *out_nonce)
 // }
 
 // just for testing
+
 int find_collision(PdfFile file_a, PdfFile file_b,
                    uint64_t max_attempts,
                    uint64_t *found_nonce_a, uint64_t *found_nonce_b)
@@ -93,18 +94,28 @@ int find_collision(PdfFile file_a, PdfFile file_b,
         exit(1);
     }
 
-    printf("Phase 1: filling table with hashes from file_a...\n");
-    for (uint64_t nonce_a = 0; nonce_a < max_attempts; nonce_a++)
+    // Phase 1 should not try to insert more entries than the table can hold.
+    // We cap the number of insertions at a safe load factor (e.g. 90% of TABLE_SIZE)
+    // to keep linear probing fast and avoid ever filling the table completely.
+    uint64_t phase1_limit = (TABLE_SIZE / 10) * 9; // 90% of TABLE_SIZE
+    if (max_attempts < phase1_limit)
+    {
+        phase1_limit = max_attempts;
+    }
+
+    printf("Phase 1: filling table with hashes from file_a (up to %llu entries)...\n",
+           (unsigned long long)phase1_limit);
+
+    for (uint64_t nonce_a = 0; nonce_a < phase1_limit; nonce_a++)
     {
         set_nonce(file_a.data, nonce_a);
         uint64_t h = toy_hash(file_a.data, file_a.size);
         table_insert(table, h, nonce_a);
 
-        // Print progress every 1 million attempts
         if (nonce_a % 1000000 == 0 && nonce_a > 0)
         {
             printf("  ...%llu / %llu done\n",
-                   (unsigned long long)nonce_a, (unsigned long long)max_attempts);
+                   (unsigned long long)nonce_a, (unsigned long long)phase1_limit);
         }
     }
 

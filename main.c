@@ -17,13 +17,13 @@ int main(int argc, char *argv[])
     PdfFile file_b = pdf_load(argv[2]);
 
     // Set my student number
-    set_student_number(file_a.data, "12345678");
-    set_student_number(file_b.data, "12345678");
+    set_student_number(file_a.data, "25053306");
+    set_student_number(file_b.data, "25053306");
 
     printf("Searching for a collision...\n");
 
     uint64_t nonce_a, nonce_b;
-    uint64_t max_attempts = 30000000; // start small, increase later for harder pairs
+    uint64_t max_attempts = 300000000; // start small, increase later for harder pairs
 
     clock_t start = clock();
     int found = find_collision(file_a, file_b, max_attempts, &nonce_a, &nonce_b);
