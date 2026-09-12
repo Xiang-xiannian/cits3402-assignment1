@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdint.h>
+#include <string.h>
 #include <omp.h>
 #include "pdf_io.h"
 #include "toy_hash.h"
@@ -9,6 +10,15 @@
 
 #define STUDENT_NUMBER "25053306"
 #define MAX_ATTEMPTS 300000000ULL
+
+// Build an output filename like "solved_1_kilo_a.pdf" from an input path
+// like "data/1_kilo_a.pdf", by stripping the directory and adding a prefix.
+void build_output_name(const char *input_path, char *out, size_t out_size)
+{
+    const char *slash = strrchr(input_path, '/');
+    const char *filename = slash ? slash + 1 : input_path;
+    snprintf(out, out_size, "solved_%s", filename);
+}
 int main(int argc, char *argv[])
 {
     if (argc < 3)
@@ -77,9 +87,14 @@ int main(int argc, char *argv[])
     printf("Verified: both files now hash to %012llx\n",
            (unsigned long long)check_a);
 
-    pdf_write("solved_a.pdf", file_a);
-    pdf_write("solved_b.pdf", file_b);
-    printf("Wrote solved_a.pdf and solved_b.pdf\n");
+    char output_a[256];
+    char output_b[256];
+    build_output_name(argv[1], output_a, sizeof(output_a));
+    build_output_name(argv[2], output_b, sizeof(output_b));
+
+    pdf_write(output_a, file_a);
+    pdf_write(output_b, file_b);
+    printf("Wrote %s and %s\n", output_a, output_b);
 
     free(file_a.data);
     free(file_b.data);
