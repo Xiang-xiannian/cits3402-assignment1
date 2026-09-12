@@ -1,0 +1,10 @@
+Job ID: 1199131
+Running on: k003.hpc.uwa.edu.au
+CPUs: 96
+Using 96 threads
+Searching for a collision...
+Phase 1: filling table with hashes from file_a (parallel, up to 60397974 entries)...
+Phase 2: searching file_b against the table (parallel)...
+Collision found! nonce_a=21999834, nonce_b=87570732 (took 237.799 seconds)
+Verified: both files now hash to b9d191bb04e7
+Wrote solved_a.pdf and solved_b.pdf

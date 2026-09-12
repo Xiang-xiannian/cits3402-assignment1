@@ -4,8 +4,7 @@ collision_finder.exe
 
 # Test output files generated during development
 test_output.pdf
-solved_a.pdf
-solved_b.pdf
+
 
 # OS-specific junk files
 .DS_Store

@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH --job-name=final_solutions
+#SBATCH --account=cits
+#SBATCH --partition=cits3402
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=64
+#SBATCH --mem=4G
+#SBATCH --time=01:00:00
+#SBATCH --output=final_solutions_%j.out
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=25053306@student.uwa.edu.au
+
+module load gcc/9.4.0
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export OMP_DYNAMIC=false
+
+DATA_DIR="/group/cits/cits123/cits3402-assignment1-data"
+
+for PAIR in 1_kilo 2_mega 3_giga 4_tera 5_peta 6_exa; do
+    echo "=== Solving $PAIR ==="
+    ./collision_finder "$DATA_DIR/${PAIR}_a.pdf" "$DATA_DIR/${PAIR}_b.pdf" $SLURM_CPUS_PER_TASK
+done
